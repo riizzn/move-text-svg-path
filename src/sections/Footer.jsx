@@ -2,12 +2,14 @@ import React, { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
+import { forwardRef } from "react";
 gsap.registerPlugin(ScrollTrigger);
 
 const Footer = () => {
   const containerRef = useRef(null);
-  const texts = useRef([]); // Ref to hold the array of textPath elements
+  const texts = useRef([]);
+  const trigRef = useRef(null);
+  // Ref to hold the array of textPath elements
 
   useGSAP(
     () => {
@@ -23,6 +25,9 @@ const Footer = () => {
             start: "top bottom",
             end: "bottom bottom",
             scrub: true,
+            onUpdate: (self) => {
+              trigRef.current = self.progress;
+            },
           },
         });
       });
@@ -56,9 +61,45 @@ const Footer = () => {
         </text>
       </svg>
 
-      <div className="h-[250px]"></div>
+      <Logos ref={trigRef} />
     </div>
   );
 };
 
 export default Footer;
+
+export const Logos = () => {
+  const smallRef = useRef(null);
+  const containerRef = useRef(null);
+
+  useGSAP(() => {
+    gsap.fromTo(
+      smallRef.current,
+      { y: -700 },
+      {
+        y: 0,
+        duration:1,
+        delay: 0.5,
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top bottom",
+          end: "bottom bottom",
+          scrub: true,
+        },
+      }
+    );
+  }, []);
+
+  return (
+    <div ref={containerRef} className="h-[250px] bg-black">
+      <div
+        ref={smallRef}
+        className="h-full flex gap-5 font-bold text-white text-3xl justify-center items-center"
+      >
+        <span>A</span>
+        <span>B</span>
+        <span>C</span>
+      </div>
+    </div>
+  );
+};
