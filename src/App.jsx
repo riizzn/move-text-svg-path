@@ -1,8 +1,12 @@
 import React from 'react'
+import Footer from './sections/Footer'
 
 const App = () => {
   return (
-    <div>App</div>
+    <main className=''>
+      <div className='h-screen'></div>
+      <Footer/>
+    </main>
   )
 }
 
