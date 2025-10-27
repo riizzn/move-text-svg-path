@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -69,31 +69,27 @@ const Footer = () => {
 export default Footer;
 
 export const Logos = () => {
-  const smallRef = useRef(null);
+  const [y, setY] = useState(-500);
   const containerRef = useRef(null);
 
   useGSAP(() => {
-    gsap.fromTo(
-      smallRef.current,
-      { y: -700 },
-      {
-        y: 0,
-        duration:1,
-        delay: 0.5,
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top bottom",
-          end: "bottom bottom",
-          scrub: true,
-        },
-      }
-    );
+    const interpolater = gsap.utils.interpolate(-700, 0);
+    ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: "top bottom",
+      end: "bottom bottom",
+      scrub: true,
+      onUpdate: (self) => {
+
+        setY(interpolater(self.progress));
+      },
+    });
   }, []);
 
   return (
     <div ref={containerRef} className="h-[250px] bg-black">
       <div
-        ref={smallRef}
+        style={{ transform: `translateY(${y}px` }}
         className="h-full flex gap-5 font-bold text-white text-3xl justify-center items-center"
       >
         <span>A</span>
